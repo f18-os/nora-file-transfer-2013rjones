@@ -1,0 +1,10 @@
+Ryan Jones 
+
+All borrowed code that I used in my solution have in code citations. 
+The main portion borrowed from would be an example implementation of how to use mutex which I used as the basis to allow for simple counter messages to be sent 
+without messed up formatting. (Race condition) 
+
+The original code was based from code provided by Dr.Freudenthall 
+Furthermore, general code guidance was provided by tutorialspoint.
+
+All ideas and implementation decisions were completely original and solely mine.
