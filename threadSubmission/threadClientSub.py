@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 #This code initially started as a mix of how to use mutex taken from: https://stackoverflow.com/questions/3310049/proper-use-of-mutexes-in-python#3311157 for a general implementation and outline on how to use mutex then a combo of the framedThreadedClient provided by Dr.Freudenthal.
+#this code also is new take on my old code on how transfer files in a server. This program assumes that the user will only input files that are actually in their directory.
 
-# Echo client program
 import socket, sys, re,os
 import params
 from framedSock import FramedStreamSock
@@ -26,7 +26,7 @@ mutex = Lock()
 
 def processData(data, thread_safe, fileNameProvided):
     if thread_safe:
-        mutex.acquire()
+        mutex.acquire() #set this to prevent other threads from running in between these. 
     try:
         thread_id = threading.get_ident()
         #print('\nProcessing data:', data, "ThreadId:", thread_id)
@@ -34,10 +34,10 @@ def processData(data, thread_safe, fileNameProvided):
         #so we know that we have a file to process. 
         
         
-        fs.sendmsg("OPENFILE".encode('utf-8'))
+        fs.sendmsg("OPENFILE".encode('utf-8')) #tell server that the name of the file is coming next. 
         print("received:", fs.receivemsg())
         
-        fs.sendmsg(fileNameProvided.encode('utf-8'))
+        fs.sendmsg(fileNameProvided.encode('utf-8')) #send that file name next. 
         print("received:", fs.receivemsg())
         
         with open(fileNameProvided) as f: #this loops through file writing each line. 
@@ -49,20 +49,14 @@ def processData(data, thread_safe, fileNameProvided):
                     fs.sendmsg(val.encode('utf-8'))
                     print("received:", fs.receivemsg())
 
-        #f.close()
         
-        fs.sendmsg("CLOSEFILE".encode('utf-8'))
+        fs.sendmsg("CLOSEFILE".encode('utf-8')) #tell server that the file is over. 
         print("received:", fs.receivemsg())
         
         
-        #SendDet = "Processing data: = " + str(data) 
-        #fs.sendmsg(SendDet.encode('utf-8'))
-        #print("received:", fs.receivemsg())
-        
-        #framedSend(s, SendDet.encode('utf-8') , debug)
     finally:
         if thread_safe:
-            mutex.release()
+            mutex.release() #unlock for other threads to run. 
 
 
 tryConnect = True 
@@ -138,7 +132,7 @@ try: #this is to catch any errors with connection to server
                         
                         print("File Name: "+ fileNameProvided)
                 
-                        while True:
+                        while True: #this is the race condition code to run it with 100 threads to see if it messes with the information. 
                             some_data = counter        
                             t = Thread(target=processData, args=(some_data, thread_safe, fileNameProvided))
                             t.start()
