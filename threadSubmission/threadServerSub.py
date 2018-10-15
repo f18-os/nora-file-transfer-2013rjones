@@ -20,7 +20,7 @@ while(notUnique):
 #should have storage folder now. 
 
 switchesVarDefaults = (
-    (('-l', '--listenPort') ,'listenPort', 50002),
+    (('-l', '--listenPort') ,'listenPort', 50007),
     (('-d', '--debug'), "debug", False), # boolean (set if present)
     (('-?', '--usage'), "usage", False), # boolean (set if present)
     )
@@ -48,14 +48,21 @@ class ServerThread(Thread):
     def run(self):
         from os import listdir #these three lines implement a method get all file names in a folder efficiently. I took this from: https://stackoverflow.com/questions/3207219/how-do-i-list-all-files-of-a-directory#3207973
         from os.path import isfile, join
+        
+        
         fileDict = [f for f in listdir(strPath) if isfile(join(strPath, f))] #line three referenced above. 
         nxtIsFile = False
         strFILEPATH = ""
         writeLine = False 
+        
         while True:
             
             
             payload = self.fsock.receivemsg()
+            payOrig = payload
+            payload = payload.decode('utf-8') 
+            
+            print("Payload :" + payload)
             
             if not payload:
                 if self.debug: print(self.fsock, "server thread done")
@@ -77,12 +84,8 @@ class ServerThread(Thread):
             if(payload == "OPENFILE"): 
                 nxtIsFile = True
                 
-                
-            msg = ("%s (%s)" % ("Wrote", payload)).encode()
+            msg = ("%s (%s)" % ("Wrote", payOrig)).encode()
             self.fsock.sendmsg(msg)
-
-
-
 
 
 
