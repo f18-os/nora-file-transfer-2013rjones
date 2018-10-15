@@ -63,7 +63,7 @@ class ServerThread(Thread):
             if(writeLine): 
                 if(payload != "CLOSEFILE"):
                    with open(strFILEPATH, 'a') as text_file:
-                      text_file.write(payload)
+                      text_file.write(payload + '\n')
                    text_file.close()
                 else:
                    writeLine = False  
