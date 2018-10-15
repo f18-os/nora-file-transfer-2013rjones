@@ -55,7 +55,7 @@ class ServerThread(Thread):
         strFILEPATH = ""
         writeLine = False 
         
-        while True:
+        while True: # loop within the threads for the server. 
             
             
             payload = self.fsock.receivemsg()
@@ -67,11 +67,11 @@ class ServerThread(Thread):
             if not payload:
                 if self.debug: print(self.fsock, "server thread done")
                 return    
-            if(writeLine): 
-                if(payload != "CLOSEFILE"):
-                   with open(strFILEPATH, 'a') as text_file:
-                      text_file.write(payload + '\n')
-                   text_file.close()
+            if(writeLine):  #these conditionals all work in reverse order. essentially bottom condition should run first then top should run last. 
+                if(payload != "CLOSEFILE"): #then we should write to the file. That will be the line we just received. 
+                   with open(strFILEPATH, 'a') as createdFile:
+                      createdFile.write(payload + '\n')
+                   createdFile.close()
                 else:
                    writeLine = False  
             if(nxtIsFile): 
@@ -84,7 +84,7 @@ class ServerThread(Thread):
             if(payload == "OPENFILE"): 
                 nxtIsFile = True
                 
-            msg = ("%s (%s)" % ("Wrote", payOrig)).encode()
+            msg = ("%s (%s)" % ("Wrote", payOrig)).encode() #return to user what we saw.
             self.fsock.sendmsg(msg)
 
 
