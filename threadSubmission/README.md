@@ -4,6 +4,8 @@
 This folder contains all the files pertaining to my server and client solution. 
 The 2 python programs that implement the client and server are threadClientSub.py and threadServer.py. 
 
+
+<h3>Running Information: </h3>
 To run these programs you must in the proper directory input: 
     <h4>'Python3 threadServerSub.py'</h4> 
 and 
@@ -12,6 +14,7 @@ and
 The server's default listening port is 50007. You must specify the proper connection path and port to link the client and 
 server together. 
 
+<h3>Client Program Information:</h3>
 
 The program for the client works by using a thread to behave as the client. I embedded a race condition test within my code to
 generate lots of threads writing to the same file to ensure that the locking mechanism used works. This program works by 
@@ -22,10 +25,14 @@ doesn't redisplay the menu, when this happens if you press enter again it will a
 even if the server states some bad reads it will still properly store the files, so it is safe to ignore those. I left 
 all feedback and debugging prints to ensure that the user can see what the program is doing. 
 
+<h3>Server Program Information:</h3>
+
 The program for the server works by creating new threads for each new client that joins. This server program will overwrite files 
 if the user tries to send a file that they already have stored in the server. Furthermore, this program works by having some triggers that 
 it recognizes to do certain commands. This program will work with a proxy inbetween as well due to the fact that all of the messages are 
 framed.
+
+<h3>Final Notes:</h3>
 
 Lastly, it is important to note that there are minimal exception catches in both programs. Thus, these two programs aren't the most robust
 solutions out there for a client and server. That said they will work as intended even if there are some exceptions that display during 
