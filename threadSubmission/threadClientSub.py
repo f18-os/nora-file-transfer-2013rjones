@@ -34,26 +34,27 @@ def processData(data, thread_safe, fileNameProvided):
         #so we know that we have a file to process. 
         
         
-        cnt = 0
-                                
-        #try:
-        #    with open(fileNameProvided) as f:
-        #        for line in f:#loop through all lines if they are small enough send else split in two and tack detail to end. 
-                    
-    
-        #f.close()
-        
-        
         fs.sendmsg("OPENFILE".encode('utf-8'))
         print("received:", fs.receivemsg())
         
         fs.sendmsg(fileNameProvided.encode('utf-8'))
         print("received:", fs.receivemsg())
         
+        try:
+            with open(fileNameProvided) as f: #this loops through file writing each line. 
+                for line in f:#loop through all lines if they are small enough send else split in two and tack detail to end. 
+                    val = line.strip(); 
+                    if(val.strip() == ""): 
+                         fs.sendmsg("_____EMPTYLINE______".encode('utf-8'))
+                    else:
+                        fs.sendmsg(val.encode('utf-8'))
+                        print("received:", fs.receivemsg())
+    
+            f.close()
+        except Exception as ex:
+            print(ex)
         
-        fs.sendmsg("FirstLine".encode('utf-8'))
-        print("received:", fs.receivemsg())
-        
+    
         fs.sendmsg("CLOSEFILE".encode('utf-8'))
         print("received:", fs.receivemsg())
         
