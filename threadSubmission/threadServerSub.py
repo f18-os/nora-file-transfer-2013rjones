@@ -48,21 +48,36 @@ class ServerThread(Thread):
     def run(self):
         from os import listdir #these three lines implement a method get all file names in a folder efficiently. I took this from: https://stackoverflow.com/questions/3207219/how-do-i-list-all-files-of-a-directory#3207973
         from os.path import isfile, join
+        fileDict = [f for f in listdir(strPath) if isfile(join(strPath, f))] #line three referenced above. 
+        nxtIsFile = False
+        strFILEPATH = ""
+        writeLine = False 
         while True:
-            fileDict = [f for f in listdir(strPath) if isfile(join(strPath, f))] #line three referenced above. 
-
+            
+            
             payload = self.fsock.receivemsg()
             
             if not payload:
                 if self.debug: print(self.fsock, "server thread done")
                 return    
+            if(writeLine): 
+                if(payload != "CLOSEFILE"):
+                   with open(strFILEPATH, 'a') as text_file:
+                      text_file.write(payload)
+                   text_file.close()
+                else:
+                   writeLine = False  
+            if(nxtIsFile): 
+                fileGiven = open(strPath +"/"+payload,'wb+') #open file in server area to write to.
+                strFILEPATH  = strPath +"/"+payload
+                writeLine = True
+                fileGiven.close()
+                nxtIsFile = False 
 
-
-            print("read: " + payload)
-            
-            cmds = payload.split()
-            
- 
+            if(payload == "OPENFILE"): 
+                nxtIsFile = True
+                
+                
             msg = ("%s (%s)" % ("Wrote", payload)).encode()
             self.fsock.sendmsg(msg)
 
