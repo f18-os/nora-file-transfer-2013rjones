@@ -34,72 +34,29 @@ def processData(data, thread_safe, fileNameProvided):
         #so we know that we have a file to process. 
         
         
-        #modified logic for processing files here. 
-        
-        SendDet = "-StrFl "+ fileNameProvided.strip()
-        fs.sendmsg(SendDet.encode('utf-8'))
-        print("received:", fs.receivemsg())
-
-        
         cnt = 0
                                 
-        try:
-            with open(fileNameProvided) as f:
-                for line in f:#loop through all lines if they are small enough send else split in two and tack detail to end. 
-                    if(sys.getsizeof(line) <= 100): 
-                    #send
-                        if(line.strip() != ""):
-                            print("Sending line. " + line)
-                            fs.sendmsg(line.encode('utf-8'))
-                            print("received:", fs.receivemsg())
-                            
-                            
-                        else: 
-                            print("Sending line. EMPTYLINE" )
-                            
-                            fs.sendmsg("EMPTYLINE".encode('utf-8'))
-                            print("received:", fs.receivemsg())
-                        
-                    else:
-                        totSizeLine = sys.getsizeof(line)
-                        #print("Total line size: "+ str(totSizeLine))
-                        notDone = True
-                        cnt = 0
-                        while(notDone):#this loop sends lines that are too big by breaking them up. 
-                            totSizeLineRem = totSizeLine - (98*cnt)
-                            if(totSizeLineRem > 98): 
-                                cnt = cnt + 1 
-                                valLoop = totSizeLineRem / 98 
-                                looping = True
-                                totLoop = 0 
-                                while(looping): 
-                                    if(valLoop <= totLoop):
-                                        looping = False
-                                        
-                                        fs.sendmsg("NEWLINE".encode('utf-8'))
-                                        print("received:", fs.receivemsg())
-                                        
-                                        fs.sendmsg("DONELINE".encode('utf-8'))
-                                        print("received:", fs.receivemsg())
-                                        notDone = False 
-                                    else:    
-                                        lineSending = "PL "+ line[(0+(98*totLoop)):(98 + (98*totLoop))]
-                                        print("LineSending: "+ lineSending)
-                                        
-                                        fs.sendmsg(lineSending.encode('utf-8'))
-                                        print("received:", fs.receivemsg())
-                                        totLoop = totLoop + 1 
-
-
-        except Exception as e:
-            print(e)
-            print("Error during byte writing.")
+        #try:
+        #    with open(fileNameProvided) as f:
+        #        for line in f:#loop through all lines if they are small enough send else split in two and tack detail to end. 
+                    
     
-        f.close()
-        #tell server we are done writing 
-        SendDet = "-cmd CloseFileWritingChunks"
-        framedSend(s, SendDet.encode('utf-8') , debug)
-        print("received:", framedReceive(s, debug))
+        #f.close()
+        
+        
+        fs.sendmsg("OPENFILE".encode('utf-8'))
+        print("received:", fs.receivemsg())
+        
+        fs.sendmsg(fileNameProvided.encode('utf-8'))
+        print("received:", fs.receivemsg())
+        
+        
+        fs.sendmsg("FirstLine".encode('utf-8'))
+        print("received:", fs.receivemsg())
+        
+        fs.sendmsg("CLOSEFILE".encode('utf-8'))
+        print("received:", fs.receivemsg())
+        
         
         #SendDet = "Processing data: = " + str(data) 
         #fs.sendmsg(SendDet.encode('utf-8'))
