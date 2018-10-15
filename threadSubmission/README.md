@@ -5,9 +5,9 @@ This folder contains all the files pertaining to my server and client solution.
 The 2 python programs that implement the client and server are threadClientSub.py and threadServer.py. 
 
 To run these programs you must in the proper directory input: 
-    'Python3 threadServerSub.py' 
+    <h4>'Python3 threadServerSub.py'</h4> 
 and 
-    'Python3 threadClientSub.py'
+    <h4>'Python3 threadClientSub.py'</h4>
 
 The server's default listening port is 50007. You must specify the proper connection path and port to link the client and 
 server together. 
